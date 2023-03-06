@@ -1,12 +1,34 @@
 "use client"; // this is a client component
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import { ethers } from "ethers";
+import { address, abi } from "../DonateMe.json";
 import "../index.css";
 
-function SendDonate({}) {
+function SendDonate() {
   const [tip, setTip] = useState(0);
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
+
+  const donate = async () => {
+    const { ethereum } = window;
+    const provider = new ethers.providers.Web3Provider(ethereum, "any");
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(address, abi, signer);
+    const donateTransaction = await contract.donate(
+      name ?? "Someone",
+      message ?? "",
+      { value: ethers.utils.parseEther(tip) }
+    );
+
+    await donateTransaction.wait();
+
+    console.log("donated");
+
+    setName("");
+    setMessage("");
+    setTip("");
+  };
 
   return (
     <fieldset className="donate">
@@ -50,7 +72,9 @@ function SendDonate({}) {
       </div>
       <div className="item">
         <div>
-          <button className="connect-btn">Donate</button>
+          <button onClick={donate} className="connect-btn">
+            Donate
+          </button>
         </div>
       </div>
     </fieldset>

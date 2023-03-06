@@ -7,7 +7,7 @@ contract DonateMe {
 
     // with event, it allows to write a transaction log to blockchain
     event NewMemo(
-          address indexed from,
+        address indexed from,
         uint256 timestamp,
         string name,
         string message

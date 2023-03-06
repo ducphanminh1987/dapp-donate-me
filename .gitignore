@@ -1,21 +1,23 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-/contracts/node_modules
+node_modules
+
+contracts/node_modules
 
 # dependencies
-/donate-me-website/node_modules
-/.pnp
+donate-me-website/node_modules
+.pnp
 .pnp.js
 
 # testing
-/donate-me-website/coverage
+donate-me-website/coverage
 
 # next.js
-/donate-me-website/.next/
-/donate-me-website/out/
+donate-me-website/.next/
+donate-me-website/out/
 
 # production
-/donate-me-website/build
+donate-me-website/build
 
 # misc
 .DS_Store
