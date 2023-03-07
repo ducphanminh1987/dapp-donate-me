@@ -1,33 +1,36 @@
 "use client"; // this is a client component
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useContext } from "react";
+import { MetamaskContext } from "./Metamask";
 import { ethers } from "ethers";
-import { address, abi } from "../DonateMe.json";
 import "../index.css";
 
 function SendDonate() {
+  const { contract } = useContext(MetamaskContext);
+
   const [tip, setTip] = useState(0);
+
   const [message, setMessage] = useState("");
+
   const [name, setName] = useState("");
 
   const donate = async () => {
-    const { ethereum } = window;
-    const provider = new ethers.providers.Web3Provider(ethereum, "any");
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(address, abi, signer);
-    const donateTransaction = await contract.donate(
-      name ?? "Someone",
-      message ?? "",
-      { value: ethers.utils.parseEther(tip) }
-    );
+    try {
+      if (!contract) throw "contract is not available";
 
-    await donateTransaction.wait();
-
-    console.log("donated");
-
-    setName("");
-    setMessage("");
-    setTip("");
+      const donateTransaction = await contract.donate(
+        name ?? "Someone",
+        message ?? "",
+        { value: ethers.utils.parseEther(tip) }
+      );
+      await donateTransaction.wait();
+      // reset form
+      setName("");
+      setMessage("");
+      setTip("");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

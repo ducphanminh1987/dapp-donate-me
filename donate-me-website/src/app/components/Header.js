@@ -1,21 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { MetamaskContext } from "./Metamask";
 
 export default function Header() {
-  const [account, setAccount] = useState();
-
-  useEffect(() => {
-    window.ethereum
-      .request({ method: "eth_accounts" })
-      .then((accounts) => setAccount(accounts[0]));
-  }, []);
-
-  const connectToMetamask = async () => {
-    window.ethereum
-      .request({ method: "eth_requestAccounts" })
-      .then((accounts) => setAccount(accounts[0]));
-  };
-
+  const { account, connectToMetamask } = useContext(MetamaskContext);
   return (
     <div className="header">
       <div className="header-right">

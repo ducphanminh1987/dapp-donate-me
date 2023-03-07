@@ -1,27 +1,19 @@
 "use client"; // this is a client component
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
 import { address, abi } from "../DonateMe.json";
-
+import { MetamaskContext } from "./Metamask";
 const timeDoubleToString = (time) => new Date(time).toUTCString();
 
 export default function Memos() {
+  const { contract } = useContext(MetamaskContext);
+
   const [memos, setMemos] = useState([]);
 
-  const getMemos = async () => {
-    const { ethereum } = window;
-    const provider = new ethers.providers.Web3Provider(ethereum, "any");
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(address, abi, signer);
-    // setContract(contract);
+  const getMemos = async (contract) => {
     const memos = await contract.getMemos();
     setMemos(memos);
   };
-
-  useEffect(() => {
-    // get memo list from contract
-    getMemos();
-  }, []);
 
   const onNewMemo = (from, timestamp, name, message) => {
     console.log("time", timestamp);
@@ -29,22 +21,17 @@ export default function Memos() {
   };
 
   useEffect(() => {
-    const { ethereum } = window;
-    let contract = null;
-    // Listen for new memo events.
-    if (ethereum) {
-      const provider = new ethers.providers.Web3Provider(ethereum, "any");
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(address, abi, signer);
+    // get memo list from contract
+    if (contract) {
+      getMemos(contract);
       contract.on("NewMemo", onNewMemo);
     }
-
     return () => {
       if (contract) {
-        contract.off("NewMemo", onNewMemo);
+        contract.off("NewMemo", console.log);
       }
     };
-  }, []);
+  }, [contract]);
 
   return (
     <fieldset className="memos">

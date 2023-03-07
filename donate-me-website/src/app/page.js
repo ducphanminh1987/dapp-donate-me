@@ -4,16 +4,19 @@ import "./index.css";
 import Header from "./components/Header";
 import SendDonate from "./components/SendDonate";
 import Memos from "./components/Memos";
+import { Metamask } from "./components/Metamask";
 
 export default function Home() {
   return (
     <div className="home">
       <div className="main">
-        <Header />
-        <div className="body">
-          <SendDonate />
-          <Memos />
-        </div>
+        <Metamask>
+          <Header />
+          <div className="body">
+            <SendDonate />
+            <Memos />
+          </div>
+        </Metamask>
       </div>
     </div>
   );
